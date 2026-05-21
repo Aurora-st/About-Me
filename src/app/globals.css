@@ -1,26 +1,203 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #030014;
+  --foreground: #f8fafc;
+  --card-bg: rgba(255, 255, 255, 0.03);
+  --card-border: rgba(255, 255, 255, 0.08);
+  --neon-cyan: #00f2fe;
+  --neon-violet: #8a2be2;
+  --neon-magenta: #ff007f;
+  --neon-amber: #f59e0b;
+  --glow-color: rgba(138, 43, 226, 0.15);
+  --grid-color: rgba(255, 255, 255, 0.03);
+}
+
+.light-theme {
+  --background: #fafbfe;
+  --foreground: #0f172a;
+  --card-bg: rgba(15, 23, 42, 0.03);
+  --card-border: rgba(15, 23, 42, 0.08);
+  --neon-cyan: #0ea5e9;
+  --neon-violet: #6366f1;
+  --neon-magenta: #ec4899;
+  --neon-amber: #d97706;
+  --glow-color: rgba(99, 102, 241, 0.08);
+  --grid-color: rgba(15, 23, 42, 0.02);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  --color-neon-cyan: var(--neon-cyan);
+  --color-neon-violet: var(--neon-violet);
+  --color-neon-magenta: var(--neon-magenta);
+  --color-neon-amber: var(--neon-amber);
+  
+  --font-sans: var(--font-plus-jakarta), var(--font-geist-sans), system-ui, sans-serif;
+  --font-display: var(--font-space-grotesk), var(--font-geist-sans), sans-serif;
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  --animate-float: float 6s ease-in-out infinite;
+  --animate-float-slow: float-slow 9s ease-in-out infinite;
+  --animate-float-fast: float-fast 4s ease-in-out infinite;
+  --animate-pulse-glow: pulse-glow 3s ease-in-out infinite;
+  --animate-orbit: orbit 60s linear infinite;
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-15px) rotate(1deg); }
+  }
+  @keyframes float-slow {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-25px) rotate(-1.5deg); }
+  }
+  @keyframes float-fast {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-8px) rotate(0.5deg); }
+  }
+  @keyframes pulse-glow {
+    0%, 100% { opacity: 0.5; filter: drop-shadow(0 0 15px var(--neon-cyan)); }
+    50% { opacity: 0.9; filter: drop-shadow(0 0 30px var(--neon-violet)); }
+  }
+  @keyframes orbit {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
   }
 }
 
+* {
+  box-sizing: border-box;
+  scroll-behavior: smooth;
+}
+
 body {
-  background: var(--background);
+  background-color: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
+  overflow-x: hidden;
+  transition: background-color 0.5s ease, color 0.5s ease;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--background);
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, var(--neon-cyan), var(--neon-violet));
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, var(--neon-violet), var(--neon-magenta));
+}
+
+/* Modern Glassmorphism Utilities */
+.glass-panel {
+  background: var(--card-bg);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--card-border);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+}
+
+.light-theme .glass-panel {
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.05);
+}
+
+.glass-card {
+  position: relative;
+  background: var(--card-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--card-border);
+  border-radius: 16px;
+  overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Glowing Neon Elements */
+.glow-text-cyan {
+  text-shadow: 0 0 10px rgba(0, 242, 254, 0.4);
+}
+
+.glow-text-violet {
+  text-shadow: 0 0 10px rgba(138, 43, 226, 0.4);
+}
+
+.glow-text-magenta {
+  text-shadow: 0 0 10px rgba(255, 0, 127, 0.4);
+}
+
+/* Sci-fi Hologram and Cyber Grid Lines */
+.cyber-grid {
+  background-image: 
+    linear-gradient(to right, var(--grid-color) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--grid-color) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+.cyber-dots {
+  background-image: radial-gradient(var(--grid-color) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+/* Animated Neon Borders */
+.animated-border {
+  position: relative;
+}
+
+.animated-border::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(to right, var(--neon-cyan), var(--neon-violet), var(--neon-magenta));
+  -webkit-mask: 
+     linear-gradient(#fff 0 0) content-box, 
+     linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  opacity: 0.3;
+  transition: opacity 0.3s ease;
+}
+
+.animated-border:hover::after {
+  opacity: 1;
+}
+
+/* Dynamic Radial Glow following mouse (used in components via style property) */
+.mouse-glow-card {
+  position: relative;
+}
+
+.mouse-glow-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    800px circle at var(--mouse-x, 0) var(--mouse-y, 0),
+    var(--glow-color),
+    transparent 40%
+  );
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+.mouse-glow-card:hover::before {
+  opacity: 1;
+}
+
+/* Gamer Dashboard UI Items */
+.gaming-btn {
+  clip-path: polygon(8% 0%, 100% 0%, 100% 70%, 92% 100%, 0% 100%, 0% 30%);
 }

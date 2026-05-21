@@ -1,36 +1,99 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Abhinav Singh — Cyber-Glass Portfolio (Next.js)
+
+A futuristic, high-performance personal portfolio built with **Next.js (App Router)**, **Tailwind CSS**, **Framer Motion**, and an interactive **Three.js** starfield background. The UI is designed as a "cyber HUD" experience with glassmorphism panels and an interactive mascot.
+
+
+## Tech Stack
+
+- **Next.js** (App Router)
+- **React** / **TypeScript**
+- **Tailwind CSS** + custom theme variables
+- **Framer Motion** (animations, layout effects)
+- **Three.js** (space particle background)
+- **canvas-confetti** (mascot celebration)
+- **lucide-react** (icons)
+
+## What’s Implemented
+
+### Page & Layout
+- `src/app/layout.tsx`: global fonts and metadata for the portfolio (title/description/OpenGraph/Twitter).
+- `src/app/page.tsx`: orchestrates the full single-page flow:
+  - **Hero** (`src/sections/Hero.tsx`)
+  - **About** (`src/sections/About.tsx`)
+  - **Experience** (`src/sections/Experience.tsx`)
+  - **Skills subsystem** (`src/sections/Skills.tsx`)
+  - **Projects catalog** (`src/sections/Projects.tsx`)
+  - **Achievements HUD** (`src/sections/Achievements.tsx`)
+  - **Resume card** (`src/sections/Resume.tsx`)
+  - **Contact console** (`src/sections/Contact.tsx`)
+
+### Interactive Space Background
+- `src/components/SpaceCanvas.tsx`
+  - WebGL starfield (neon-cyan/violet/white additive points)
+  - slow orbital motion + mouse parallax camera
+  - floating glass wireframe geometries
+  - auto-adjusts particle opacity when the theme toggles
+  - clean disposal of Three.js resources on unmount
+
+### Mascot Assistant (CyberTeddy)
+- `src/components/CyberTeddy.tsx`
+  - States: `idle`, `wave`, `sleep`, `celebrate`, `point`
+  - Auto-sleeps after inactivity and wakes on interaction (mouse/scroll)
+  - Celebration triggers confetti
+  - “Point/scan” mode uses parallax look-at calculations
+  - Floating speech bubble with dismiss option
+
+### Navigation & Theme
+- `src/components/Navbar.tsx`
+  - Fixed glass navigation with active-section tracking
+  - Smooth scrolling for anchor links
+  - Mobile menu overlay
+- `src/components/ThemeToggle.tsx`
+  - Toggles a `light-theme` body class (updates CSS variables)
+
+### Glass UI Primitives
+- `src/components/GlassCard.tsx`
+  - Glassmorphism styling
+  - Optional 3D tilt + mouse glow highlight
+  - Hover lift/scale + spring animations
+
+- `src/components/Magnetic.tsx`
+  - “Magnetic” hover attraction effect for links/buttons
+
+## Sections Overview
+
+- **Hero**: typewriter role titles + CTA buttons (projects, resume download, contact)
+- **Skills**: interactive category selector with animated progress bars and floating tech “cloud”
+- **Projects**: curated project cards with futuristic HUD preview frames and action links
+- **Contact**: email copy card + social links + a simulated transmission form
+  - Contact section triggers mascot reactions via intersection observer
 
 ## Getting Started
 
-First, run the development server:
-
+### Install
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Run (dev)
+```bash
+npm run dev
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Open: **http://localhost:3000**
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Build & Production
+```bash
+npm run build
+npm run start
+```
 
-## Learn More
+## Deployment
 
-To learn more about Next.js, take a look at the following resources:
+Deploy using any Next.js-friendly platform. The project is compatible with **Vercel** deployment conventions.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Notes
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- This is a UI/portfolio experience: some actions (e.g., contact submission) are intentionally simulated for the front-end demo.
+- The theme system uses CSS variables and a `light-theme` class on `body`.
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
