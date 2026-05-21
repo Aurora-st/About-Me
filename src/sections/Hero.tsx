@@ -157,13 +157,16 @@ export default function Hero({ onTriggerMascot }: HeroProps) {
             </Magnetic>
 
             <Magnetic range={40} strength={0.3}>
-              <button
+              <a
+                href="https://drive.google.com/file/d/1T7PUkv_y5VZnCdTaOWExRzYxFpGSMZ7t/view?usp=sharing"
+                target="_blank"
+                rel="noopener noreferrer"
                 onClick={handleResumeClick}
                 className="px-8 py-3.5 rounded-full font-bold uppercase tracking-wider text-xs pointer-events-auto cursor-pointer text-black bg-white hover:bg-slate-200 hover:shadow-[0_0_20px_rgba(255,255,255,0.3)] transition-all duration-300 flex items-center gap-2"
               >
-                Download Resume
+                View Resume
                 <Sparkles className="w-4 h-4 text-neon-violet animate-pulse" />
-              </button>
+              </a>
             </Magnetic>
 
             <Magnetic range={35} strength={0.25}>

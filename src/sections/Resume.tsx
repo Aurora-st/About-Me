@@ -52,7 +52,10 @@ export default function Resume({ onTriggerMascot }: ResumeProps) {
             {/* CTA Trigger Button (Right column) */}
             <div className="md:col-span-4 flex flex-col items-center justify-center">
               <Magnetic range={45} strength={0.3}>
-                <button
+                <a
+                  href="https://drive.google.com/file/d/1T7PUkv_y5VZnCdTaOWExRzYxFpGSMZ7t/view?usp=sharing"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   onClick={handleDownload}
                   className="pointer-events-auto cursor-pointer p-8 rounded-full border border-neon-cyan/20 bg-neon-cyan/5 flex flex-col items-center justify-center gap-2 hover:shadow-[0_0_30px_rgba(0,242,254,0.25)] hover:border-neon-cyan/40 transition-all duration-300 relative group"
                   style={{
@@ -66,12 +69,12 @@ export default function Resume({ onTriggerMascot }: ResumeProps) {
 
                   <Download className="w-8 h-8 text-neon-cyan group-hover:scale-110 group-hover:translate-y-0.5 transition-transform duration-300" />
                   <span className="text-[10px] font-bold tracking-widest uppercase font-mono text-white mt-1 select-none">
-                    Download CV
+                    View CV
                   </span>
                   
                   {/* Tiny sparkles floating */}
                   <Sparkles className="absolute top-4 right-4 w-4 h-4 text-neon-magenta animate-pulse" />
-                </button>
+                </a>
               </Magnetic>
               
               <span className="text-[9px] font-mono text-slate-500 uppercase tracking-widest mt-4 select-none">
