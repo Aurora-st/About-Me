@@ -16,7 +16,7 @@ export default function Contact({ onTriggerMascot }: ContactProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
 
-  const emailAddress = "abhinav.singh.cs@gmail.com";
+  const emailAddress = "abhinavsingh.official05@gmail.com";
 
   // Trigger mascot waving goodbye when contact section comes fully into viewport
   useEffect(() => {

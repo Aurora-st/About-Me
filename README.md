@@ -70,6 +70,9 @@ A futuristic, high-performance personal portfolio built with **Next.js (App Rout
 
 ## Getting Started
 
+### Requirements
+- Node.js (recommended LTS)
+
 ### Install
 ```bash
 npm install
@@ -87,6 +90,12 @@ Open: **http://localhost:3000**
 npm run build
 npm run start
 ```
+
+### Lint
+```bash
+npm run lint
+```
+
 
 ## Deployment
 
