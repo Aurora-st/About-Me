@@ -9,9 +9,20 @@ export type TeddyState = "idle" | "wave" | "sleep" | "celebrate" | "point";
 interface CyberTeddyProps {
   forceState?: TeddyState;
   onStateChange?: (state: TeddyState) => void;
+  isColorLabActive?: boolean;
+  onMascotClick?: () => void;
+  primaryHue?: number;
+  glowIntensity?: number;
 }
 
-export default function CyberTeddy({ forceState, onStateChange }: CyberTeddyProps) {
+const CyberTeddy = React.forwardRef<HTMLDivElement, CyberTeddyProps>(({
+  forceState,
+  onStateChange,
+  isColorLabActive,
+  onMascotClick,
+  primaryHue,
+  glowIntensity,
+}, ref) => {
   const [currentState, setCurrentState] = useState<TeddyState>("idle");
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const [teddyPos, setTeddyPos] = useState({ x: 0, y: 0 });
@@ -19,6 +30,27 @@ export default function CyberTeddy({ forceState, onStateChange }: CyberTeddyProp
   const [showBubble, setShowBubble] = useState(true);
   const containerRef = useRef<HTMLDivElement>(null);
   const idleTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const [floatingTexts, setFloatingTexts] = useState<{ id: number; text: string; x: number; y: number }[]>([]);
+  const prevActiveRef = useRef(isColorLabActive);
+
+  React.useImperativeHandle(ref, () => containerRef.current!);
+
+  useEffect(() => {
+    if (isColorLabActive && !prevActiveRef.current) {
+      const diagnostics = ["CALIBRATING...", "HSL_ACTIVE", "SYS_LINK: 100%", "GPU_ACCEL", "SPECTRAL_ON"];
+      const newTexts = diagnostics.map((text, index) => ({
+        id: Date.now() + index,
+        text,
+        x: Math.random() * 80 - 40,
+        y: -20 - index * 18,
+      }));
+      setFloatingTexts(newTexts);
+      setTimeout(() => {
+        setFloatingTexts([]);
+      }, 3000);
+    }
+    prevActiveRef.current = isColorLabActive;
+  }, [isColorLabActive]);
 
   // Sync forced states (e.g. when resume download is clicked)
   useEffect(() => {
@@ -43,6 +75,14 @@ export default function CyberTeddy({ forceState, onStateChange }: CyberTeddyProp
       }
     }
   }, [forceState]);
+
+  // Synchronize bubble dialogue with active Color Lab parameter updates
+  useEffect(() => {
+    if (isColorLabActive) {
+      setBubbleText(`COLOR LAB SYSTEM ACTIVE // HUE: ${primaryHue || 180}° // BLOOM: ${(glowIntensity || 1).toFixed(2)}x // READY TO SPECTRAL MORPH 🦾`);
+      setShowBubble(true);
+    }
+  }, [isColorLabActive, primaryHue, glowIntensity]);
 
   // Handle Mascot Dialogues based on States
   useEffect(() => {
@@ -168,6 +208,11 @@ export default function CyberTeddy({ forceState, onStateChange }: CyberTeddyProp
   };
 
   const handleMascotClick = () => {
+    if (onMascotClick) {
+      onMascotClick();
+      return;
+    }
+
     // Jump-celebrate or say a funny quote
     if (currentState === "sleep") {
       setCurrentState("idle");
@@ -196,8 +241,29 @@ export default function CyberTeddy({ forceState, onStateChange }: CyberTeddyProp
   return (
     <div
       ref={containerRef}
-      className="fixed bottom-6 right-6 z-40 flex flex-col items-end pointer-events-none select-none max-w-[280px] sm:max-w-[320px]"
+      className="fixed bottom-6 right-6 z-40 flex flex-col items-end pointer-events-none select-none max-w-[280px] sm:max-w-[320px] cyberteddy-container"
     >
+      {/* Floating Sci-Fi diagnostics */}
+      <AnimatePresence>
+        {floatingTexts.map((item) => (
+          <motion.span
+            key={item.id}
+            initial={{ opacity: 0, y: 0, x: item.x, scale: 0.8 }}
+            animate={{ opacity: [0, 1, 1, 0], y: -80 - Math.random() * 40, x: item.x + (Math.random() * 20 - 10), scale: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 2.5, ease: "easeOut" }}
+            className="absolute text-[9px] font-mono text-neon-cyan select-none pointer-events-none drop-shadow-[0_0_8px_var(--neon-cyan)]"
+            style={{ 
+              bottom: "80px", 
+              right: "40px",
+              color: "var(--neon-cyan)"
+            }}
+          >
+            {item.text}
+          </motion.span>
+        ))}
+      </AnimatePresence>
+
       {/* Speech Bubble */}
       <AnimatePresence>
         {showBubble && (
@@ -209,8 +275,8 @@ export default function CyberTeddy({ forceState, onStateChange }: CyberTeddyProp
             className="pointer-events-auto cursor-pointer glass-panel border border-neon-cyan/20 px-4 py-3 rounded-2xl text-xs sm:text-sm font-medium mb-3 shadow-xl backdrop-blur-lg flex flex-col gap-1 relative overflow-hidden"
             onClick={() => setShowBubble(false)}
             style={{
-              background: "rgba(10, 10, 30, 0.75)",
-              color: "#e2e8f0",
+              background: "rgba(8, 8, 10, 0.9)",
+              color: "#f8fafc",
               maxWidth: "240px",
             }}
           >
@@ -219,7 +285,7 @@ export default function CyberTeddy({ forceState, onStateChange }: CyberTeddyProp
             <p className="leading-relaxed font-sans">{bubbleText}</p>
             <span className="text-[10px] opacity-40 self-end font-mono mt-1">Tap to dismiss</span>
             {/* Bubble Tail */}
-            <div className="absolute bottom-[-6px] right-8 w-3 h-3 rotate-45 border-r border-b border-neon-cyan/20 bg-[rgba(10,10,30,0.75)]" />
+            <div className="absolute bottom-[-6px] right-8 w-3 h-3 rotate-45 border-r border-b border-neon-cyan/20 bg-[rgba(8,8,10,0.9)]" />
           </motion.div>
         )}
       </AnimatePresence>
@@ -288,7 +354,7 @@ export default function CyberTeddy({ forceState, onStateChange }: CyberTeddyProp
               d="M 55 50 C 35 50, 35 80, 55 80 C 65 80, 70 70, 68 62"
               stroke="var(--neon-cyan)"
               strokeWidth="5"
-              fill="rgba(10,15,30,0.85)"
+              fill="rgba(15,15,18,0.9)"
               className="glass-panel"
             />
             <circle cx="53" cy="65" r="8" fill="var(--neon-cyan)" opacity="0.7" />
@@ -298,7 +364,7 @@ export default function CyberTeddy({ forceState, onStateChange }: CyberTeddyProp
               d="M 145 50 C 165 50, 165 80, 145 80 C 135 80, 130 70, 132 62"
               stroke="var(--neon-cyan)"
               strokeWidth="5"
-              fill="rgba(10,15,30,0.85)"
+              fill="rgba(15,15,18,0.9)"
             />
             <circle cx="147" cy="65" r="8" fill="var(--neon-cyan)" opacity="0.7" />
 
@@ -310,7 +376,7 @@ export default function CyberTeddy({ forceState, onStateChange }: CyberTeddyProp
               height="45"
               rx="11"
               transform="rotate(25 41 132)"
-              fill="rgba(10,15,30,0.9)"
+              fill="rgba(15,15,18,0.9)"
               stroke="var(--card-border)"
               strokeWidth="2"
             />
@@ -334,7 +400,7 @@ export default function CyberTeddy({ forceState, onStateChange }: CyberTeddyProp
                   : { rotate: -25 }
               }
               transition={{ duration: 2, ease: "easeInOut" }}
-              fill="rgba(10,15,30,0.9)"
+              fill="rgba(15,15,18,0.9)"
               stroke="var(--card-border)"
               strokeWidth="2"
             />
@@ -353,7 +419,7 @@ export default function CyberTeddy({ forceState, onStateChange }: CyberTeddyProp
               width="24"
               height="35"
               rx="12"
-              fill="rgba(8,12,25,0.95)"
+              fill="rgba(10,10,12,0.95)"
               stroke="var(--card-border)"
               strokeWidth="2"
             />
@@ -366,7 +432,7 @@ export default function CyberTeddy({ forceState, onStateChange }: CyberTeddyProp
               width="24"
               height="35"
               rx="12"
-              fill="rgba(8,12,25,0.95)"
+              fill="rgba(10,10,12,0.95)"
               stroke="var(--card-border)"
               strokeWidth="2"
             />
@@ -379,13 +445,13 @@ export default function CyberTeddy({ forceState, onStateChange }: CyberTeddyProp
               width="96"
               height="65"
               rx="30"
-              fill="rgba(15,20,38,0.85)"
+              fill="rgba(18,18,22,0.9)"
               stroke="var(--card-border)"
               strokeWidth="3"
             />
             
             {/* Glowing Chest Reactor (Hologram circle) */}
-            <circle cx="100" cy="128" r="16" fill="rgba(8,12,25,0.9)" stroke="var(--neon-violet)" strokeWidth="2" />
+            <circle cx="100" cy="128" r="16" fill="rgba(8,8,10,0.9)" stroke="var(--neon-violet)" strokeWidth="2" />
             <motion.circle
               cx="100"
               cy="128"
@@ -407,7 +473,7 @@ export default function CyberTeddy({ forceState, onStateChange }: CyberTeddyProp
               width="110"
               height="70"
               rx="35"
-              fill="rgba(20,25,48,0.95)"
+              fill="rgba(20,20,24,0.95)"
               stroke="rgba(255,255,255,0.15)"
               strokeWidth="3.5"
             />
@@ -423,14 +489,21 @@ export default function CyberTeddy({ forceState, onStateChange }: CyberTeddyProp
               width="84"
               height="28"
               rx="14"
-              fill="rgba(5,5,15,0.95)"
+              fill="rgba(5,5,7,0.98)"
               stroke="var(--neon-cyan)"
               strokeWidth="2.5"
               animate={
-                currentState === "sleep"
-                  ? { stroke: "var(--neon-violet)", boxShadow: "0 0 5px var(--neon-violet)" }
-                  : { stroke: "var(--neon-cyan)" }
+                isColorLabActive
+                  ? {
+                      stroke: "var(--neon-cyan)",
+                      strokeWidth: [2.5, 4.5, 2.5],
+                      fill: ["rgba(5,5,7,0.98)", "rgba(0, 242, 254, 0.15)", "rgba(5,5,7,0.98)"],
+                    }
+                  : currentState === "sleep"
+                  ? { stroke: "var(--neon-violet)", strokeWidth: 2.5 }
+                  : { stroke: "var(--neon-cyan)", strokeWidth: 2.5 }
               }
+              transition={isColorLabActive ? { repeat: Infinity, duration: 1.5, ease: "easeInOut" } : undefined}
             />
 
             {/* Visor Expressions / LED Eyes */}
@@ -479,7 +552,14 @@ export default function CyberTeddy({ forceState, onStateChange }: CyberTeddyProp
                   exit={{ opacity: 0 }}
                 >
                   {/* Left glowing circle with inner pupil */}
-                  <circle cx="79" cy="72" r="5.5" fill="var(--neon-cyan)" />
+                  <motion.circle 
+                    cx="79" 
+                    cy="72" 
+                    r={isColorLabActive ? 6.5 : 5.5} 
+                    fill="var(--neon-cyan)" 
+                    animate={isColorLabActive ? { r: [6.5, 8.5, 6.5] } : undefined}
+                    transition={isColorLabActive ? { repeat: Infinity, duration: 1.5, ease: "easeInOut" } : undefined}
+                  />
                   <motion.circle
                     cx={79 + (mousePos.x - teddyPos.x) * 0.005}
                     cy={72 + (mousePos.y - teddyPos.y) * 0.005}
@@ -488,7 +568,14 @@ export default function CyberTeddy({ forceState, onStateChange }: CyberTeddyProp
                   />
 
                   {/* Right glowing circle with inner pupil */}
-                  <circle cx="121" cy="72" r="5.5" fill="var(--neon-cyan)" />
+                  <motion.circle 
+                    cx="121" 
+                    cy="72" 
+                    r={isColorLabActive ? 6.5 : 5.5} 
+                    fill="var(--neon-cyan)" 
+                    animate={isColorLabActive ? { r: [6.5, 8.5, 6.5] } : undefined}
+                    transition={isColorLabActive ? { repeat: Infinity, duration: 1.5, ease: "easeInOut" } : undefined}
+                  />
                   <motion.circle
                     cx={121 + (mousePos.x - teddyPos.x) * 0.005}
                     cy={72 + (mousePos.y - teddyPos.y) * 0.005}
@@ -515,4 +602,7 @@ export default function CyberTeddy({ forceState, onStateChange }: CyberTeddyProp
       </motion.div>
     </div>
   );
-}
+});
+
+CyberTeddy.displayName = "CyberTeddy";
+export default CyberTeddy;

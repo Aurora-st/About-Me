@@ -36,8 +36,8 @@ export default function GlassCard({
       // 3D Card Tilt Calculation
       const centerX = rect.width / 2;
       const centerY = rect.height / 2;
-      const rotateX = ((y - centerY) / centerY) * -10; // Max 10 degrees tilt
-      const rotateY = ((x - centerX) / centerX) * 10;
+      const rotateX = ((y - centerY) / centerY) * -6; // Smooth 6 degrees max tilt for elite feel
+      const rotateY = ((x - centerX) / centerX) * 6;
       setRotate({ x: rotateX, y: rotateY });
     }
   };
@@ -59,9 +59,9 @@ export default function GlassCard({
   return (
     <motion.div
       ref={cardRef}
-      initial={{ opacity: 0, y: 30 }}
+      initial={{ opacity: 0, y: 25 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-100px" }}
+      viewport={{ once: true, margin: "-80px" }}
       onMouseMove={handleMouseMove}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
@@ -72,26 +72,32 @@ export default function GlassCard({
       animate={{
         rotateX: rotate.x,
         rotateY: rotate.y,
-        scale: isHovered ? 1.015 : 1,
-        z: isHovered ? 20 : 0,
+        scale: isHovered ? 1.012 : 1,
+        z: isHovered ? 15 : 0,
       }}
       transition={{
         type: "spring",
-        stiffness: 220,
-        damping: 22,
+        stiffness: 260,
+        damping: 24,
         mass: 0.1,
-        opacity: { duration: 0.8, ease: [0.16, 1, 0.3, 1], delay },
-        y: { duration: 0.8, ease: [0.16, 1, 0.3, 1], delay },
+        opacity: { duration: 0.7, ease: [0.16, 1, 0.3, 1], delay },
+        y: { duration: 0.7, ease: [0.16, 1, 0.3, 1], delay },
       }}
-      className={`glass-card mouse-glow-card relative z-10 transition-shadow duration-300 ${
+      className={`glass-card mouse-glow-card tech-border-glow relative z-10 transition-shadow duration-300 ${
         glowEnabled ? "before:opacity-100" : ""
       } ${className}`}
     >
-      {/* Decorative cybernetic corner accents */}
-      <div className="absolute top-0 left-0 w-2 h-2 border-t-2 border-l-2 border-neon-cyan/30 rounded-tl" />
-      <div className="absolute top-0 right-0 w-2 h-2 border-t-2 border-r-2 border-neon-cyan/30 rounded-tr" />
-      <div className="absolute bottom-0 left-0 w-2 h-2 border-b-2 border-l-2 border-neon-cyan/30 rounded-bl" />
-      <div className="absolute bottom-0 right-0 w-2 h-2 border-b-2 border-r-2 border-neon-cyan/30 rounded-br" />
+      {/* Iridescent Metallic Reflection Overlay */}
+      <div className="iridescent-overlay" />
+
+      {/* Cybernetic active scanning HUD laser beam */}
+      {isHovered && <div className="scanner-overlay" />}
+
+      {/* Elegant Technical Corner Brackets */}
+      <div className="corner-accent-tl" />
+      <div className="corner-accent-tr" />
+      <div className="corner-accent-bl" />
+      <div className="corner-accent-br" />
 
       {/* Internal Content (positioned above mouse-glow base) */}
       <div className="relative z-10 w-full h-full">{children}</div>

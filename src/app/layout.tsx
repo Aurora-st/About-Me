@@ -55,6 +55,10 @@ export default function RootLayout({
         className="min-h-full flex flex-col selection:bg-neon-cyan/30 selection:text-white"
         suppressHydrationWarning
       >
+        {/* Unified Cinematic OS Overlays */}
+        <div className="scanlines crt-screen" />
+        <div className="cinematic-vignette" />
+
         {children}
       </body>
     </html>
