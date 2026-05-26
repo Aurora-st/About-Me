@@ -325,7 +325,7 @@ const CyberTeddy = React.forwardRef<HTMLDivElement, CyberTeddyProps>(({
         {/* Mascot Robot Base platform projection */}
         <div className="absolute bottom-[-15px] w-24 h-4 bg-neon-cyan/10 rounded-full blur-md animate-pulse border border-neon-cyan/5 -z-10" />
 
-        {/* Teddy Bear SVG Frame */}
+        {/* Animated MP4 Holographic AI Assistant */}
         <motion.div
           animate={
             currentState === "celebrate"
@@ -338,266 +338,56 @@ const CyberTeddy = React.forwardRef<HTMLDivElement, CyberTeddyProps>(({
             transform: `rotateX(${lookAt.rotateX}deg) rotateY(${lookAt.rotateY}deg) translate3d(${lookAt.x}px, ${lookAt.y}px, 0px)`,
             transition: "transform 0.15s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
           }}
-          className="w-24 h-24 sm:w-28 sm:h-28 drop-shadow-[0_0_15px_var(--glow-color)] relative"
+          className="w-28 h-28 sm:w-32 sm:h-32 relative group"
         >
-          <svg
-            viewBox="0 0 200 200"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-            className="w-full h-full"
+          {/* Futuristic Holographic Glow Backdrop Aura */}
+          <div
+            className="absolute inset-0 rounded-full blur-2xl opacity-75 animate-pulse pointer-events-none -z-10"
+            style={{
+              background: `radial-gradient(circle, hsla(${primaryHue || 180}, 100%, 50%, 0.4) 0%, transparent 70%)`,
+              boxShadow: `0 0 45px 15px hsla(${primaryHue || 180}, 100%, 50%, ${0.25 * (glowIntensity || 1)})`,
+            }}
+          />
+
+          {/* Chromatic Edge Reflection ring */}
+          <div
+            className="absolute inset-0 rounded-full border border-white/10 opacity-30 pointer-events-none"
+            style={{
+              background: `linear-gradient(135deg, hsla(${primaryHue || 180}, 100%, 50%, 0.15), transparent 40%, hsla(${(primaryHue || 180) + 120}, 100%, 50%, 0.15))`,
+              boxShadow: `inset 0 0 20px hsla(${primaryHue || 180}, 100%, 50%, 0.3)`,
+            }}
+          />
+
+          {/* Laser-cut Hologram Shell Container */}
+          <div
+            className="w-full h-full rounded-full overflow-hidden relative border border-neon-cyan/20 bg-black/40 backdrop-blur-sm group-hover:scale-105 group-hover:border-neon-cyan/40 transition-all duration-500 shadow-2xl"
+            style={{
+              mixBlendMode: "screen", // Seamlessly masks solid black video backgrounds
+              boxShadow: `0 0 30px 5px hsla(${primaryHue || 180}, 100%, 50%, ${0.4 * (glowIntensity || 1)}), inset 0 0 25px hsla(${primaryHue || 180}, 100%, 50%, 0.25)`,
+            }}
           >
-            {/* Robot Body Shadow / Glow Base */}
-            <circle cx="100" cy="115" r="45" fill="url(#bodyGlow)" opacity="0.15" />
-
-            {/* Left Ear */}
-            <motion.path
-              d="M 55 50 C 35 50, 35 80, 55 80 C 65 80, 70 70, 68 62"
-              stroke="var(--neon-cyan)"
-              strokeWidth="5"
-              fill="rgba(15,15,18,0.9)"
-              className="glass-panel"
+            {/* The Futuristic AI video assistant */}
+            <video
+              src="/assistant.mp4"
+              autoPlay
+              muted
+              loop
+              playsInline
+              preload="auto"
+              className="w-full h-full object-cover scale-110 pointer-events-none"
+              style={{
+                filter: `hue-rotate(${(primaryHue || 180) - 180}deg) brightness(1.2) contrast(1.15)`,
+              }}
             />
-            <circle cx="53" cy="65" r="8" fill="var(--neon-cyan)" opacity="0.7" />
+          </div>
 
-            {/* Right Ear */}
-            <motion.path
-              d="M 145 50 C 165 50, 165 80, 145 80 C 135 80, 130 70, 132 62"
-              stroke="var(--neon-cyan)"
-              strokeWidth="5"
-              fill="rgba(15,15,18,0.9)"
-            />
-            <circle cx="147" cy="65" r="8" fill="var(--neon-cyan)" opacity="0.7" />
-
-            {/* Arms - Left (Static resting/floating) */}
-            <motion.rect
-              x="30"
-              y="110"
-              width="22"
-              height="45"
-              rx="11"
-              transform="rotate(25 41 132)"
-              fill="rgba(15,15,18,0.9)"
-              stroke="var(--card-border)"
-              strokeWidth="2"
-            />
-            <circle cx="28" cy="145" r="6" fill="var(--neon-violet)" />
-
-            {/* Arms - Right (Dynamic greeting paw) */}
-            <motion.rect
-              x="148"
-              y="110"
-              width="22"
-              height="45"
-              rx="11"
-              style={{ transformOrigin: "159px 120px" }}
-              animate={
-                currentState === "wave"
-                  ? { rotate: [-10, -50, -10, -50, -10], y: [0, -10, 0, -10, 0] }
-                  : currentState === "celebrate"
-                  ? { rotate: -65 }
-                  : currentState === "point"
-                  ? { rotate: -110, x: -10 }
-                  : { rotate: -25 }
-              }
-              transition={{ duration: 2, ease: "easeInOut" }}
-              fill="rgba(15,15,18,0.9)"
-              stroke="var(--card-border)"
-              strokeWidth="2"
-            />
-            <circle
-              cx="165"
-              cy="142"
-              r="6"
-              fill={currentState === "point" ? "var(--neon-cyan)" : "var(--neon-violet)"}
-            />
-
-            {/* Mechanical Legs */}
-            {/* Left Leg */}
-            <rect
-              x="62"
-              y="152"
-              width="24"
-              height="35"
-              rx="12"
-              fill="rgba(10,10,12,0.95)"
-              stroke="var(--card-border)"
-              strokeWidth="2"
-            />
-            <circle cx="74" cy="178" r="7" fill="var(--neon-cyan)" opacity="0.5" />
-
-            {/* Right Leg */}
-            <rect
-              x="114"
-              y="152"
-              width="24"
-              height="35"
-              rx="12"
-              fill="rgba(10,10,12,0.95)"
-              stroke="var(--card-border)"
-              strokeWidth="2"
-            />
-            <circle cx="126" cy="178" r="7" fill="var(--neon-cyan)" opacity="0.5" />
-
-            {/* Robot Torso / Body */}
-            <rect
-              x="52"
-              y="95"
-              width="96"
-              height="65"
-              rx="30"
-              fill="rgba(18,18,22,0.9)"
-              stroke="var(--card-border)"
-              strokeWidth="3"
-            />
-            
-            {/* Glowing Chest Reactor (Hologram circle) */}
-            <circle cx="100" cy="128" r="16" fill="rgba(8,8,10,0.9)" stroke="var(--neon-violet)" strokeWidth="2" />
-            <motion.circle
-              cx="100"
-              cy="128"
-              r="6"
-              animate={
-                currentState === "sleep"
-                  ? { r: [6, 8, 6], fill: "#4b0082" }
-                  : currentState === "celebrate"
-                  ? { r: [6, 12, 6], fill: "#ff007f" }
-                  : { r: [6, 10, 6], fill: "#00f2fe" }
-              }
-              transition={{ repeat: Infinity, duration: 2 }}
-            />
-
-            {/* Robot Head Segment */}
-            <rect
-              x="45"
-              y="42"
-              width="110"
-              height="70"
-              rx="35"
-              fill="rgba(20,20,24,0.95)"
-              stroke="rgba(255,255,255,0.15)"
-              strokeWidth="3.5"
-            />
-
-            {/* Chrome Side Antenna Connectors */}
-            <circle cx="45" cy="77" r="5" fill="var(--neon-magenta)" />
-            <circle cx="155" cy="77" r="5" fill="var(--neon-magenta)" />
-
-            {/* Holographic Glowing Cyber Glasses (Expressive Visor) */}
-            <motion.rect
-              x="58"
-              y="58"
-              width="84"
-              height="28"
-              rx="14"
-              fill="rgba(5,5,7,0.98)"
-              stroke="var(--neon-cyan)"
-              strokeWidth="2.5"
-              animate={
-                isColorLabActive
-                  ? {
-                      stroke: "var(--neon-cyan)",
-                      strokeWidth: [2.5, 4.5, 2.5],
-                      fill: ["rgba(5,5,7,0.98)", "rgba(0, 242, 254, 0.15)", "rgba(5,5,7,0.98)"],
-                    }
-                  : currentState === "sleep"
-                  ? { stroke: "var(--neon-violet)", strokeWidth: 2.5 }
-                  : { stroke: "var(--neon-cyan)", strokeWidth: 2.5 }
-              }
-              transition={isColorLabActive ? { repeat: Infinity, duration: 1.5, ease: "easeInOut" } : undefined}
-            />
-
-            {/* Visor Expressions / LED Eyes */}
-            <AnimatePresence mode="wait">
-              {currentState === "sleep" ? (
-                // Zzz Eyes (Flat low-light bars)
-                <motion.g
-                  key="sleep-eyes"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 0.6 }}
-                  exit={{ opacity: 0 }}
-                >
-                  <line x1="72" y1="72" x2="86" y2="72" stroke="var(--neon-violet)" strokeWidth="4" strokeLinecap="round" />
-                  <line x1="114" y1="72" x2="128" y2="72" stroke="var(--neon-violet)" strokeWidth="4" strokeLinecap="round" />
-                </motion.g>
-              ) : currentState === "celebrate" ? (
-                // Happy Curvy Arcs
-                <motion.g
-                  key="happy-eyes"
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0 }}
-                >
-                  <path d="M 70 75 Q 79 64 88 75" stroke="var(--neon-magenta)" strokeWidth="4.5" fill="none" strokeLinecap="round" />
-                  <path d="M 112 75 Q 121 64 130 75" stroke="var(--neon-magenta)" strokeWidth="4.5" fill="none" strokeLinecap="round" />
-                </motion.g>
-              ) : currentState === "wave" ? (
-                // Wink
-                <motion.g
-                  key="wink-eyes"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                >
-                  {/* Left normal eye */}
-                  <circle cx="79" cy="72" r="5" fill="var(--neon-cyan)" />
-                  {/* Right winking arch */}
-                  <path d="M 113 74 Q 121 67 129 74" stroke="var(--neon-cyan)" strokeWidth="3.5" fill="none" strokeLinecap="round" />
-                </motion.g>
-              ) : (
-                // Normal Scanning Eyes
-                <motion.g
-                  key="normal-eyes"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                >
-                  {/* Left glowing circle with inner pupil */}
-                  <motion.circle 
-                    cx="79" 
-                    cy="72" 
-                    r={isColorLabActive ? 6.5 : 5.5} 
-                    fill="var(--neon-cyan)" 
-                    animate={isColorLabActive ? { r: [6.5, 8.5, 6.5] } : undefined}
-                    transition={isColorLabActive ? { repeat: Infinity, duration: 1.5, ease: "easeInOut" } : undefined}
-                  />
-                  <motion.circle
-                    cx={79 + (mousePos.x - teddyPos.x) * 0.005}
-                    cy={72 + (mousePos.y - teddyPos.y) * 0.005}
-                    r="2"
-                    fill="#ffffff"
-                  />
-
-                  {/* Right glowing circle with inner pupil */}
-                  <motion.circle 
-                    cx="121" 
-                    cy="72" 
-                    r={isColorLabActive ? 6.5 : 5.5} 
-                    fill="var(--neon-cyan)" 
-                    animate={isColorLabActive ? { r: [6.5, 8.5, 6.5] } : undefined}
-                    transition={isColorLabActive ? { repeat: Infinity, duration: 1.5, ease: "easeInOut" } : undefined}
-                  />
-                  <motion.circle
-                    cx={121 + (mousePos.x - teddyPos.x) * 0.005}
-                    cy={72 + (mousePos.y - teddyPos.y) * 0.005}
-                    r="2"
-                    fill="#ffffff"
-                  />
-                </motion.g>
-              )}
-            </AnimatePresence>
-
-            {/* Cute robot snout nose & cyber whiskers */}
-            <circle cx="100" cy="88" r="4" fill="var(--neon-magenta)" />
-            <line x1="97" y1="94" x2="103" y2="94" stroke="rgba(255,255,255,0.4)" strokeWidth="1.5" />
-
-            {/* Definitions */}
-            <defs>
-              <radialGradient id="bodyGlow" cx="50%" cy="50%" r="50%">
-                <stop offset="0%" stopColor="var(--neon-cyan)" />
-                <stop offset="100%" stopColor="var(--neon-violet)" stopOpacity="0" />
-              </radialGradient>
-            </defs>
-          </svg>
+          {/* Holographic coordinate overlays */}
+          <div className="absolute top-1 left-2 text-[6px] font-mono text-neon-cyan opacity-40 uppercase select-none tracking-widest pointer-events-none">
+            AI_CORE: OK
+          </div>
+          <div className="absolute bottom-1 right-2 text-[6px] font-mono text-neon-cyan opacity-40 uppercase select-none tracking-widest pointer-events-none">
+            HSL_{primaryHue || 180}
+          </div>
         </motion.div>
       </motion.div>
     </div>

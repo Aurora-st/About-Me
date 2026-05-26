@@ -24,9 +24,9 @@ const skillCategories: SkillCategory[] = [
     icon: <Code className="w-4 h-4" />,
     colorClass: "text-neon-cyan border-neon-cyan/20 bg-neon-cyan/5",
     skills: [
-      { name: "C++", level: , color: "var(--neon-cyan)" },
-      { name: "JavaScript", level: , color: "var(--neon-cyan)" },
-      { name: "Python", level: , color: "var(--neon-cyan)" },
+      { name: "C++", level: 85, color: "var(--neon-cyan)" },
+      { name: "JavaScript", level: 92, color: "var(--neon-cyan)" },
+      { name: "Python", level: 88, color: "var(--neon-cyan)" },
     ],
   },
   {
