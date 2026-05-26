@@ -133,10 +133,10 @@ function HomeContent() {
             y1={coords.y1}
             x2={coords.x2}
             y2={coords.y2}
-            stroke="var(--neon-cyan)"
+            stroke={`hsla(${primaryHue || 180}, 100%, 50%, 1)`}
             strokeWidth="5"
-            opacity="0.15"
-            className="blur-[2px]"
+            opacity="0.2"
+            className="blur-[3px]"
           />
           {/* Active Dashed Laser beam */}
           <line
@@ -144,16 +144,27 @@ function HomeContent() {
             y1={coords.y1}
             x2={coords.x2}
             y2={coords.y2}
-            stroke="var(--neon-cyan)"
+            stroke={`hsla(${primaryHue || 180}, 100%, 50%, 1)`}
             strokeWidth="1.25"
             strokeDasharray="4,4"
             className="laser-tether-flow"
-            opacity="0.65"
+            opacity="0.7"
           />
           
           {/* Sockets/Points Anchors */}
-          <circle cx={coords.x1} cy={coords.y1} r="2.5" fill="var(--neon-cyan)" className="animate-pulse" />
-          <circle cx={coords.x2} cy={coords.y2} r="2.5" fill="var(--neon-cyan)" className="animate-pulse" />
+          <circle cx={coords.x1} cy={coords.y1} r="3" fill={`hsla(${primaryHue || 180}, 100%, 50%, 1)`} className="animate-pulse" />
+          <circle cx={coords.x2} cy={coords.y2} r="3" fill={`hsla(${primaryHue || 180}, 100%, 50%, 1)`} className="animate-pulse" />
+
+          {/* Traveling telemetry data spark glow */}
+          <circle r="7" fill={`hsla(${primaryHue || 180}, 100%, 50%, 1)`} opacity="0.4" className="blur-[1px]">
+            <animate attributeName="cx" from={coords.x2} to={coords.x1} dur="1.8s" repeatCount="indefinite" />
+            <animate attributeName="cy" from={coords.y2} to={coords.y1} dur="1.8s" repeatCount="indefinite" />
+          </circle>
+          {/* Traveling telemetry data spark core */}
+          <circle r="2.5" fill="#ffffff">
+            <animate attributeName="cx" from={coords.x2} to={coords.x1} dur="1.8s" repeatCount="indefinite" />
+            <animate attributeName="cy" from={coords.y2} to={coords.y1} dur="1.8s" repeatCount="indefinite" />
+          </circle>
         </svg>
       )}
     </div>

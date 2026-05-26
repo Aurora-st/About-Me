@@ -33,6 +33,33 @@ const CyberTeddy = React.forwardRef<HTMLDivElement, CyberTeddyProps>(({
   const [floatingTexts, setFloatingTexts] = useState<{ id: number; text: string; x: number; y: number }[]>([]);
   const prevActiveRef = useRef(isColorLabActive);
 
+  // Rotating Diagnostics for Minimalist HUD
+  const [diagIdx, setDiagIdx] = useState(0);
+  const idleDiagnostics = [
+    "AI CORE READY",
+    "GPU ACTIVE",
+    "SPECTRAL LINKED",
+    "COLOR ENGINE ONLINE",
+    "SYSTEM IDLE",
+  ];
+  const activeDiagnostics = [
+    "HSL ACTIVE",
+    "SYS LINK: 100%",
+    "CALIBRATING...",
+    "GPU ACCEL",
+    "SPECTRAL ON",
+  ];
+
+  const currentDiagnostics = isColorLabActive ? activeDiagnostics : idleDiagnostics;
+
+  useEffect(() => {
+    setDiagIdx(0); // Reset index on transition
+    const interval = setInterval(() => {
+      setDiagIdx((idx) => (idx + 1) % currentDiagnostics.length);
+    }, 2200);
+    return () => clearInterval(interval);
+  }, [isColorLabActive, currentDiagnostics.length]);
+
   React.useImperativeHandle(ref, () => containerRef.current!);
 
   useEffect(() => {
@@ -241,7 +268,7 @@ const CyberTeddy = React.forwardRef<HTMLDivElement, CyberTeddyProps>(({
   return (
     <div
       ref={containerRef}
-      className="fixed bottom-6 right-6 z-40 flex flex-col items-end pointer-events-none select-none max-w-[280px] sm:max-w-[320px] cyberteddy-container"
+      className="fixed bottom-6 right-6 z-40 flex flex-col items-end pointer-events-none select-none cyberteddy-container"
     >
       {/* Floating Sci-Fi diagnostics */}
       <AnimatePresence>
@@ -264,36 +291,35 @@ const CyberTeddy = React.forwardRef<HTMLDivElement, CyberTeddyProps>(({
         ))}
       </AnimatePresence>
 
-      {/* Speech Bubble */}
-      <AnimatePresence>
-        {showBubble && (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.8, y: 15 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.8, y: 10 }}
-            transition={{ type: "spring", stiffness: 300, damping: 20 }}
-            className="pointer-events-auto cursor-pointer glass-panel border border-neon-cyan/20 px-4 py-3 rounded-2xl text-xs sm:text-sm font-medium mb-3 shadow-xl backdrop-blur-lg flex flex-col gap-1 relative overflow-hidden"
-            onClick={() => setShowBubble(false)}
-            style={{
-              background: "rgba(8, 8, 10, 0.9)",
-              color: "#f8fafc",
-              maxWidth: "240px",
-            }}
-          >
-            {/* Hologram glowing top-line */}
-            <div className="absolute top-0 inset-x-0 h-[2px] bg-gradient-to-r from-neon-cyan via-neon-violet to-neon-magenta animate-pulse" />
-            <p className="leading-relaxed font-sans">{bubbleText}</p>
-            <span className="text-[10px] opacity-40 self-end font-mono mt-1">Tap to dismiss</span>
-            {/* Bubble Tail */}
-            <div className="absolute bottom-[-6px] right-8 w-3 h-3 rotate-45 border-r border-b border-neon-cyan/20 bg-[rgba(8,8,10,0.9)]" />
-          </motion.div>
-        )}
+      {/* Tiny rotating/fading HUD diagnostics overlay */}
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={`${isColorLabActive ? "active" : "idle"}-${diagIdx}`}
+          initial={{ opacity: 0, y: 5, filter: "blur(2px)" }}
+          animate={{ opacity: 0.75, y: 0, filter: "blur(0px)" }}
+          exit={{ opacity: 0, y: -5, filter: "blur(2px)" }}
+          transition={{ duration: 0.6, ease: "easeInOut" }}
+          className="text-[7.5px] font-mono tracking-widest mb-3 uppercase select-none pointer-events-none drop-shadow-[0_0_5px_var(--neon-cyan)] flex items-center gap-1.5 mr-6"
+          style={{
+            color: `hsla(${primaryHue || 180}, 100%, 70%, 0.85)`,
+          }}
+        >
+          <span 
+            className="w-1.5 h-1.5 rounded-full animate-ping"
+            style={{ backgroundColor: `hsla(${primaryHue || 180}, 100%, 50%, 0.8)` }}
+          />
+          {currentDiagnostics[diagIdx]}
+        </motion.div>
       </AnimatePresence>
 
       {/* Floating Teddy Container */}
       <motion.div
         animate={{ y: bobbingY }}
         transition={bobbingTransition}
+        whileHover={{
+          scale: 1.05,
+          transition: { duration: 0.3, ease: "easeOut" }
+        }}
         className="pointer-events-auto cursor-pointer flex flex-col items-center relative"
         onClick={handleMascotClick}
         style={{ perspective: 1000 }}
@@ -340,12 +366,47 @@ const CyberTeddy = React.forwardRef<HTMLDivElement, CyberTeddyProps>(({
           }}
           className="w-28 h-28 sm:w-32 sm:h-32 relative group"
         >
+          {/* Animated concentric energy rings */}
+          <motion.div
+            className="absolute inset-[-14px] rounded-full border border-dashed pointer-events-none"
+            animate={{
+              scale: isColorLabActive ? 1.25 : 1.0,
+              borderColor: `hsla(${primaryHue || 180}, 100%, 50%, ${isColorLabActive ? 0.55 : 0.2})`,
+            }}
+            whileHover={{
+              scale: 1.35,
+              borderColor: `hsla(${primaryHue || 180}, 100%, 50%, 0.7)`,
+            }}
+            transition={{ type: "spring", stiffness: 100, damping: 15 }}
+            style={{
+              borderStyle: "dashed",
+              animation: "spin 12s linear infinite",
+            }}
+          />
+          <motion.div
+            className="absolute inset-[-8px] rounded-full border border-dotted pointer-events-none"
+            animate={{
+              scale: isColorLabActive ? 1.15 : 1.0,
+              borderColor: `hsla(${(primaryHue || 180) + 60}, 100%, 50%, ${isColorLabActive ? 0.4 : 0.15})`,
+            }}
+            whileHover={{
+              scale: 1.22,
+              borderColor: `hsla(${(primaryHue || 180) + 60}, 100%, 50%, 0.5)`,
+            }}
+            transition={{ type: "spring", stiffness: 120, damping: 18 }}
+            style={{
+              borderStyle: "dotted",
+              animation: "spin 8s linear infinite reverse",
+            }}
+          />
+
           {/* Futuristic Holographic Glow Backdrop Aura */}
           <div
             className="absolute inset-0 rounded-full blur-2xl opacity-75 animate-pulse pointer-events-none -z-10"
             style={{
               background: `radial-gradient(circle, hsla(${primaryHue || 180}, 100%, 50%, 0.4) 0%, transparent 70%)`,
-              boxShadow: `0 0 45px 15px hsla(${primaryHue || 180}, 100%, 50%, ${0.25 * (glowIntensity || 1)})`,
+              boxShadow: `0 0 50px ${isColorLabActive ? "25px" : "15px"} hsla(${primaryHue || 180}, 100%, 50%, ${isColorLabActive ? 0.5 : 0.25} * (glowIntensity || 1))`,
+              transition: "box-shadow 0.8s cubic-bezier(0.16, 1, 0.3, 1)",
             }}
           />
 
@@ -359,15 +420,27 @@ const CyberTeddy = React.forwardRef<HTMLDivElement, CyberTeddyProps>(({
           />
 
           {/* Laser-cut Hologram Shell Container */}
-          <div
-            className="w-full h-full rounded-full overflow-hidden relative border border-neon-cyan/20 bg-black/40 backdrop-blur-sm group-hover:scale-105 group-hover:border-neon-cyan/40 transition-all duration-500 shadow-2xl"
+          <motion.div
+            className="w-full h-full rounded-full overflow-hidden relative border bg-black/40 backdrop-blur-sm shadow-2xl"
+            animate={{
+              borderColor: isColorLabActive
+                ? `hsla(${primaryHue || 180}, 100%, 50%, 0.5)`
+                : `hsla(${primaryHue || 180}, 100%, 50%, 0.25)`,
+              scale: isColorLabActive ? 1.08 : 1.0,
+            }}
+            whileHover={{
+              scale: 1.06,
+              borderColor: `hsla(${primaryHue || 180}, 100%, 50%, 0.65)`,
+              boxShadow: `0 0 45px 8px hsla(${primaryHue || 180}, 100%, 50%, 0.75), inset 0 0 30px hsla(${primaryHue || 180}, 100%, 50%, 0.4)`,
+            }}
+            transition={{ type: "spring", stiffness: 150, damping: 15 }}
             style={{
               mixBlendMode: "screen", // Seamlessly masks solid black video backgrounds
-              boxShadow: `0 0 30px 5px hsla(${primaryHue || 180}, 100%, 50%, ${0.4 * (glowIntensity || 1)}), inset 0 0 25px hsla(${primaryHue || 180}, 100%, 50%, 0.25)`,
+              boxShadow: `0 0 35px 5px hsla(${primaryHue || 180}, 100%, 50%, ${isColorLabActive ? 0.65 : 0.4} * (glowIntensity || 1)), inset 0 0 25px hsla(${primaryHue || 180}, 100%, 50%, 0.25)`,
             }}
           >
             {/* The Futuristic AI video assistant */}
-            <video
+            <motion.video
               src="/assistant.mp4"
               autoPlay
               muted
@@ -375,17 +448,46 @@ const CyberTeddy = React.forwardRef<HTMLDivElement, CyberTeddyProps>(({
               playsInline
               preload="auto"
               className="w-full h-full object-cover scale-110 pointer-events-none"
+              animate={isColorLabActive ? {
+                filter: [
+                  `hue-rotate(${(primaryHue || 180) - 180}deg) brightness(1.2) contrast(1.15)`,
+                  `hue-rotate(${(primaryHue || 180) - 180}deg) brightness(1.9) contrast(1.4)`,
+                  `hue-rotate(${(primaryHue || 180) - 180}deg) brightness(1.2) contrast(1.15)`,
+                ]
+              } : {
+                filter: `hue-rotate(${(primaryHue || 180) - 180}deg) brightness(1.2) contrast(1.15)`
+              }}
+              transition={{ duration: 0.6, ease: "easeOut" }}
+            />
+
+            {/* Spectral scanline burst overlay */}
+            <motion.div
+              className="absolute inset-0 bg-gradient-to-b from-transparent via-white/40 to-transparent opacity-0 pointer-events-none"
+              animate={
+                isColorLabActive
+                  ? {
+                      opacity: [0, 0.7, 0.7, 0],
+                      y: ["-100%", "200%"],
+                    }
+                  : { opacity: 0 }
+              }
+              transition={{
+                duration: 1.2,
+                ease: "easeInOut",
+                repeat: isColorLabActive ? Infinity : 0,
+                repeatDelay: 5,
+              }}
               style={{
-                filter: `hue-rotate(${(primaryHue || 180) - 180}deg) brightness(1.2) contrast(1.15)`,
+                mixBlendMode: "overlay",
               }}
             />
-          </div>
+          </motion.div>
 
           {/* Holographic coordinate overlays */}
-          <div className="absolute top-1 left-2 text-[6px] font-mono text-neon-cyan opacity-40 uppercase select-none tracking-widest pointer-events-none">
-            AI_CORE: OK
+          <div className="absolute top-1 left-2 text-[6px] font-mono text-neon-cyan opacity-40 uppercase select-none tracking-widest pointer-events-none" style={{ color: `hsla(${primaryHue || 180}, 100%, 60%, 0.6)` }}>
+            AI_CORE: {isColorLabActive ? "EXPANDED" : "OK"}
           </div>
-          <div className="absolute bottom-1 right-2 text-[6px] font-mono text-neon-cyan opacity-40 uppercase select-none tracking-widest pointer-events-none">
+          <div className="absolute bottom-1 right-2 text-[6px] font-mono text-neon-cyan opacity-40 uppercase select-none tracking-widest pointer-events-none" style={{ color: `hsla(${primaryHue || 180}, 100%, 60%, 0.6)` }}>
             HSL_{primaryHue || 180}
           </div>
         </motion.div>
